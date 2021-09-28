@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bjpowernode.crm.mapper.TransactionMapper">
+    <sql id="searchSQL">
+        from tbl_transaction a
+        left join tbl_customer b on a.customerId=b.id
+        left join tbl_contacts c on a.contactsId=c.id
+        <where>
+            <if test="search.owner!=null and search.owner!=''">
+                a.owner like '%' #{search.owner} '%'
+            </if>
+            <if test="search.name!=null and search.name!=''">
+                a.name like '%' #{search.name} '%'
+            </if>
+            <if test="search.customerName!=null and search.customerName!=''">
+                b.name like '%' #{search.customerName} '%'
+            </if>
+            <if test="search.contactsName!=null and search.contactsName!=''">
+                c.fullName like '%' #{search.contactsName} '%'
+            </if>
+            <if test="search.stage!=null and search.stage!=''">
+                a.stage=#{search.stage}
+            </if>
+            <if test="search.source!=null and search.source!=''">
+                a.source=#{search.source}
+            </if>
+            <if test="search.type!=null and search.type!=''">
+                a.type=#{search.type}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getCount" resultType="int">
+        select count(*)
+        <include refid="searchSQL" />
+    </select>
+    
+    <resultMap id="tranMap" type="Transaction">
+        <id property="id" column="a_id" />
+        <result property="owner" column="a_owner" />
+        <result property="amountOfMoney" column="a_amountOfMoney" />
+        <result property="name" column="a_name" />
+        <result property="expectedClosingDate" column="a_expectedClosingDate" />
+        <result property="customerId" column="a_customerId" />
+        <result property="stage" column="a_stage" />
+        <result property="type" column="a_type" />
+        <result property="source" column="a_source" />
+        <result property="activityId" column="a_activityId" />
+        <result property="contactsId" column="a_contactsId" />
+        <result property="description" column="a_description" />
+        <result property="createBy" column="a_createBy" />
+        <result property="createTime" column="a_createTime" />
+        <result property="editBy" column="a_editBy" />
+        <result property="editTime" column="a_editTime" />
+        <result property="contactSummary" column="a_contactSummary" />
+        <result property="nextContactTime" column="a_nextContactTime" />
+
+        <association property="customer">
+            <id property="id" column="b_id" />
+            <result property="owner" column="b_owner" />
+            <result property="name" column="b_name" />
+            <result property="phone" column="b_phone" />
+            <result property="website" column="b_website" />
+            <result property="description" column="b_description" />
+            <result property="createBy" column="b_createBy" />
+            <result property="createTime" column="b_createTime" />
+            <result property="editBy" column="b_editBy" />
+            <result property="editTime" column="b_editTime" />
+            <result property="contactSummary" column="b_contactSummary" />
+            <result property="nextContactTime" column="b_nextContactTime" />
+            <result property="address" column="b_address" />
+        </association>
+
+        <association property="contacts">
+            <id property="id" column="c_id" />
+            <result property="owner" column="c_owner" />
+            <result property="source" column="c_source" />
+            <result property="appellation" column="c_appellation" />
+            <result property="fullName" column="c_fullName" />
+            <result property="email" column="c_email" />
+            <result property="job" column="c_job" />
+            <result property="mphone" column="c_mphone" />
+            <result property="description" column="c_description" />
+            <result property="birth" column="c_birth" />
+            <result property="customerId" column="c_customerId" />
+            <result property="createBy" column="c_createBy" />
+            <result property="createTime" column="c_createTime" />
+            <result property="editBy" column="c_editBy" />
+            <result property="editTime" column="c_editTime" />
+            <result property="contactSummary" column="c_contactSummary" />
+            <result property="nextContactTime" column="c_nextContactTime" />
+            <result property="address" column="c_address" />
+
+        </association>
+
+    </resultMap>
+    
+    <select id="getData" resultMap="tranMap">
+      select
+        a.id a_id,
+        a.owner a_owner,
+        a.amountOfMoney a_amountOfMoney,
+        a.name a_name,
+        a.expectedClosingDate a_expectedClosingDate,
+        a.customerId a_customerId,
+        a.stage a_stage,
+        a.type a_type,
+        a.source a_source,
+        a.activityId a_activityId,
+        a.contactsId a_contactsId,
+        a.description a_description,
+        a.createBy a_createBy,
+        a.createTime a_createTime,
+        a.editBy a_editBy,
+        a.editTime a_editTime,
+        a.contactSummary a_contactSummary,
+        a.nextContactTime a_nextContactTime,
+
+        b.id b_id,
+        b.owner b_owner,
+        b.name b_name,
+        b.phone b_phone,
+        b.website b_website,
+        b.description b_description,
+        b.createBy b_createBy,
+        b.createTime b_createTime,
+        b.editBy b_editBy,
+        b.editTime b_editTime,
+        b.contactSummary b_contactSummary,
+        b.nextContactTime b_nextContactTime,
+        b.address b_address,
+
+        c.id c_id,
+        c.owner c_owner,
+        c.source c_source,
+        c.appellation c_appellation,
+        c.fullName c_fullName,
+        c.email c_email,
+        c.job c_job,
+        c.mphone c_mphone,
+        c.description c_description,
+        c.birth c_birth,
+        c.customerId c_customerId,
+        c.createBy c_createBy,
+        c.createTime c_createTime,
+        c.editBy c_editBy,
+        c.editTime c_editTime,
+        c.contactSummary c_contactSummary,
+        c.nextContactTime c_nextContactTime,
+        c.address c_address
+
+      <include refid="searchSQL" />
+
+      limit #{start},#{length}
+    </select>
+
+    <insert id="save">
+        insert into tbl_transaction values(
+        #{id},
+        #{owner},
+        #{amountOfMoney},
+        #{name},
+        #{expectedClosingDate},
+        #{customerId},
+        #{stage},
+        #{type},
+        #{source},
+        #{activityId},
+        #{contactsId},
+        #{description},
+        #{createBy},
+        #{createTime},
+        #{editBy},
+        #{editTime},
+        #{contactSummary},
+        #{nextContactTime}
+
+        )
+    </insert>
+    <!--resultType:将查询结果中的一条数据转换为什么类型-->
+    <select id="getECharts" resultType="map">
+      select stage "name",count(*) "value" from tbl_transaction GROUP BY stage
+    </select>
+</mapper>

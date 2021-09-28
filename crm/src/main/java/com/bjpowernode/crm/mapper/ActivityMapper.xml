@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bjpowernode.crm.mapper.ActivityMapper">
+
+    <!--SQL片段：抽取SQL的公共部分-->
+    <sql id="searchSQL">
+        <where>
+            <if test="search.name!=null and search.name!=''">
+                and name like '%' #{search.name} '%'
+            </if>
+            <if test="search.owner!=null and search.owner!=''">
+                and owner like '%' #{search.owner} '%'
+            </if>
+            <if test="search.startDate!=null and search.startDate!=''">
+                and startDate=#{search.startDate}
+            </if>
+            <if test="search.endDate!=null and search.endDate!=''">
+                and endDate=#{search.endDate}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getCount" resultType="int">
+        select count(*) from tbl_marketing_activities
+        <include refid="searchSQL" />
+    </select>
+
+    <select id="getData" resultType="Activity">
+        select * from tbl_marketing_activities
+        <include refid="searchSQL" />
+        limit #{start},#{length}
+    </select>
+
+    <insert id="save">
+        insert into tbl_marketing_activities values(
+            #{id},
+            #{owner},
+            #{name},
+            #{startDate},
+            #{endDate},
+            #{cost},
+            #{description},
+            #{createBy},
+            #{createTime},
+            #{editBy},
+            #{editTime}
+        )
+    </insert>
+    <select id="getAll" resultType="Activity">
+        select * from tbl_marketing_activities
+    </select>
+    <insert id="saveList">
+        insert into tbl_marketing_activities values
+        <foreach collection="list" item="act" separator=",">
+            (
+            #{act.id},
+            #{act.owner},
+            #{act.name},
+            #{act.startDate},
+            #{act.endDate},
+            #{act.cost},
+            #{act.description},
+            #{act.createBy},
+            #{act.createTime},
+            #{act.editBy},
+            #{act.editTime}
+            )
+        </foreach>
+    </insert>
+    <select id="get" resultType="Activity">
+        select * from tbl_marketing_activities where id=#{id}
+    </select>
+</mapper>
